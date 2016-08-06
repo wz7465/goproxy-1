@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"net"
 	"os"
 	"runtime"
 	"strings"
@@ -18,7 +19,12 @@ var (
 
 func main() {
 
-	hint(map[string]string{
+	if len(os.Args) > 1 && os.Args[1] == "-version" {
+		fmt.Print(version)
+		return
+	}
+
+	helpers.HintFlagValues(map[string]string{
 		"logtostderr": "true",
 		"v":           "2",
 	})
@@ -49,8 +55,17 @@ Enabled Filters    : %v`,
 		for _, fn := range config.RoundTripFilters {
 			switch fn {
 			case "autoproxy":
+				addr := config.Address
+				if strings.HasPrefix(addr, ":") {
+					ip := "127.0.0.1"
+					port := addr[1:]
+					if ips, err := helpers.LocalInterfaceIPs(); err == nil && len(ips) > 0 {
+						ip = ips[0].String()
+					}
+					addr = net.JoinHostPort(ip, port)
+				}
 				fmt.Fprintf(os.Stderr, `
-Pac Server         : http://%s/proxy.pac`, config.Address)
+Pac Server         : http://%s/proxy.pac`, addr)
 			}
 		}
 		go httpproxy.ServeProfile(profile)
@@ -58,27 +73,4 @@ Pac Server         : http://%s/proxy.pac`, config.Address)
 	fmt.Fprintf(os.Stderr, "\n------------------------------------------------------\n")
 
 	select {}
-}
-
-func hint(v map[string]string) {
-	seen := map[string]struct{}{}
-
-	for i := 1; i < len(os.Args); i++ {
-		if os.Args[i] == "-version" {
-			fmt.Print(version)
-			os.Exit(0)
-		}
-
-		for key, _ := range v {
-			if strings.HasPrefix(os.Args[i], "-"+key+"=") {
-				seen[key] = struct{}{}
-			}
-		}
-	}
-
-	for key, value := range v {
-		if _, ok := seen[key]; !ok {
-			flag.Set(key, value)
-		}
-	}
 }

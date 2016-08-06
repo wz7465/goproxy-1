@@ -117,7 +117,7 @@ function build_repo() {
 		git checkout -f pr
 	fi
 
-	export RELEASE=$(git rev-list HEAD| wc -l | xargs)
+	export RELEASE=$(git rev-list --count HEAD)
 	export RELEASE_DESCRIPTION=$(git log -1 --oneline --format="r${RELEASE}: [\`%h\`](https://github.com/${GITHUB_USER}/${GITHUB_REPO}/commit/%h) %s")
 	if [ -n "${TRAVIS_BUILD_ID}" ]; then
 		export RELEASE_DESCRIPTION=$(echo ${RELEASE_DESCRIPTION} | sed -E "s#^(r[0-9]+)#[\1](https://travis-ci.org/${GITHUB_USER}/${GITHUB_REPO}/builds/${TRAVIS_BUILD_ID})#g")
@@ -227,8 +227,14 @@ function release_repo_ci() {
 }
 
 function clean() {
-	(cd ${WORKING_DIR}/r${RELEASE}/ && ls -lht && sha256sum *)
-	rm -rf ${WORKING_DIR}
+	( set +x ;\
+		cd ${WORKING_DIR}/r${RELEASE}/ ;\
+		ls -lht ;\
+		echo ;\
+		echo 'sha1sum *' ;\
+		sha1sum * | xargs -n1 -i echo -e "\e[1;32m{}\e[0m" ;\
+		rm -rf ${WORKING_DIR} ;\
+	)
 }
 
 init_github

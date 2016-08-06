@@ -1,4 +1,4 @@
-REVSION = $(shell git rev-list HEAD | wc -l | xargs)
+REVSION = $(shell git rev-list --count HEAD)
 HTTP2REV = $(shell (cd $$GOPATH/src/github.com/phuslu/net/http2; git log --oneline -1 --format="%h"))
 
 PACKAGE = goproxy
@@ -38,6 +38,7 @@ SOURCES += $(REPO)/README.md
 SOURCES += $(REPO)/httpproxy/httpproxy.json
 SOURCES += $(wildcard $(REPO)/httpproxy/filters/*/*.json)
 SOURCES += $(REPO)/httpproxy/filters/autoproxy/gfwlist.txt
+SOURCES += $(REPO)/httpproxy/filters/autoproxy/17monipdb.dat
 
 ifeq ($(GOOS)_$(GOARCH), windows_amd64)
 	SOURCES += $(REPO)/assets/packaging/goproxy-gui.exe
@@ -49,9 +50,11 @@ else ifeq ($(GOOS)_$(GOARCH), windows_386)
 	SOURCES += $(REPO)/assets/packaging/get-latest-goproxy.cmd
 else ifeq ($(GOOS), darwin)
 	SOURCES += $(REPO)/assets/packaging/goproxy-macos.command
+	SOURCES += $(REPO)/assets/packaging/get-latest-goproxy.sh
 else
 	SOURCES += $(REPO)/assets/packaging/goproxy-gtk.py
 	SOURCES += $(REPO)/assets/packaging/goproxy.sh
+	SOURCES += $(REPO)/assets/packaging/get-latest-goproxy.sh
 endif
 
 .PHONY: build

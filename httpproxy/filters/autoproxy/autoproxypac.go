@@ -54,9 +54,12 @@ func (f *Filter) ProxyPacRoundTrip(ctx context.Context, req *http.Request) (cont
 		s := fmt.Sprintf(`// User-defined FindProxyForURL
 function FindProxyForURL(url, host) {
     if (isPlainHostName(host) ||
-        host.indexOf('127.') == 0 ||
-        host.indexOf('192.168.') == 0 ||
-        host.indexOf('10.') == 0 ||
+        isInNet(host, "10.0.0.0", "255.0.0.0") ||
+        isInNet(host, "172.16.0.0", "255.240.0.0") ||
+        isInNet(host, "169.254.0.0", "255.255.0.0") ||
+        isInNet(host, "192.168.0.0", "255.255.0.0") ||
+        isInNet(host, "127.0.0.0", "255.255.255.0") ||
+        shExpMatch(host, "*.local") ||
         shExpMatch(host, 'localhost.*')) {
         return 'DIRECT';
     }
@@ -281,6 +284,9 @@ func parseAutoProxy(r io.Reader) ([]string, error) {
 			}
 		case strings.HasPrefix(s, "."):
 			site := strings.Split(strings.Split(s[1:], "/")[0], "*")[0]
+			if strings.HasSuffix(site, ".co") {
+				site += "m"
+			}
 			sites[site] = struct{}{}
 		case !strings.ContainsAny(s, "*"):
 			site := strings.Split(s, "/")[0]

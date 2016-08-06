@@ -1,7 +1,7 @@
 {
 	"Servers": [
 		{
-			"Url": "http://yourapp.com/",
+			"Url": "https://example.com/",
 			"Password": "123456",
 			"SSLVerify": false,
 			"Host": "",
@@ -18,11 +18,11 @@
 			"RetryTimes": 2,
 			"RetryDelay": 0.05,
 			"DNSCacheExpiry": 3600,
-			"DNSCacheSize": 81920
+			"DNSCacheSize": 8192
 		},
 		"Proxy": {
 			"Enabled": false,
-			"URL": "http://127.0.0.1:1080",
+			"URL": "http://127.0.0.1:8087",
 		},
 		"DisableKeepAlives": false,
 		"DisableCompression": false,

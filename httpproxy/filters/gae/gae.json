@@ -6,7 +6,7 @@
 	"SSLVerify": false,
 	"DisableIPv6": false,
 	"ForceIPv6": false,
-	"DisableHTTP2": false,
+	"DisableHTTP2": true,
 	"ForceHTTP2": false,
 	"EnableDeadProbe": true,
 	"EnableRemoteDNS": false,
@@ -61,6 +61,7 @@
 	},
 	"ForceGAE": [
 		"domains.google.com",
+		"www.google.com/maps",
 		"www.google.com/patents",
 		"plus.google.com/$",
 	],
@@ -128,7 +129,7 @@
 	"Transport": {
 		"Dialer": {
 			"DNSCacheExpiry": 864000,
-			"DNSCacheSize": 81920,
+			"DNSCacheSize": 8192,
 			"SocketReadBuffer": 0,
 			"DualStack": false,
 			"KeepAlive": 180,
@@ -137,7 +138,7 @@
 		},
 		"Proxy": {
 			"Enabled": false,
-			"URL": "http://127.0.0.1:1080",
+			"URL": "socks5://127.0.0.1:1080",
 		},
 		"DisableCompression": false,
 		"DisableKeepAlives": false,
