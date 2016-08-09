@@ -3,6 +3,7 @@
 		"Enabled": false,
 		"Rules": {
 			"live.github.com": "direct",
+			"m.apkpure.com": "direct",
 			"rarbg.to": "direct",
 			"www.slideshare.net": "php",
 			"pastebin.com": "php",
@@ -16,12 +17,14 @@
 			"default": "",
 			"ipv6": "direct",
 			"中国": "direct",
+			"局域网": "direct",
 		},
 	},
 	"IndexFiles": {
 		"Enabled": true,
 		"Files": [
 			"proxy.pac",
+			"GoProxyAPN.mobileconfig",
 			"GoProxy.crt",
 		]
 	},
@@ -32,5 +35,8 @@
 		"Encoding": "base64",
 		"Expiry": 86400,
 		"Duration": 3600,
+	},
+	"MobileConfig": {
+		"Enabled": true,
 	}
 }

@@ -18,7 +18,6 @@ import (
 )
 
 type Handler struct {
-	http.Handler
 	Listener         helpers.Listener
 	RequestFilters   []filters.RequestFilter
 	RoundTripFilters []filters.RoundTripFilter
@@ -71,7 +70,7 @@ func (h Handler) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		}
 		if err != nil {
 			if err != io.EOF {
-				glog.Errorf("%s Filter Request %T error: %#v", remoteAddr, f, err)
+				glog.Errorf("%s Filter Request %T error: %+v", remoteAddr, f, err)
 			}
 			return
 		}
@@ -94,7 +93,7 @@ func (h Handler) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		// Unexcepted errors
 		if err != nil {
 			filters.SetRoundTripFilter(ctx, f)
-			glog.Errorf("%s Filter RoundTrip %T error: %v", remoteAddr, f, err)
+			glog.Errorf("%s Filter RoundTrip %T error: %+v", remoteAddr, f, err)
 			http.Error(rw, fmtError(ctx, err), http.StatusBadGateway)
 			return
 		}
@@ -115,7 +114,7 @@ func (h Handler) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		}
 		ctx, resp, err = f.Response(ctx, resp)
 		if err != nil {
-			glog.Errorln("%s Filter %T Response error: %v", remoteAddr, f, err)
+			glog.Errorln("%s Filter %T Response error: %+v", remoteAddr, f, err)
 			http.Error(rw, fmtError(ctx, err), http.StatusBadGateway)
 			return
 		}
